@@ -25,12 +25,34 @@ const VOICE_KEYWORD_MAP = {
     'điện thoại': 'cell_phone',
     'phone': 'cell_phone',
     'di động': 'cell_phone',
+    'smartphone': 'cell_phone',
     'laptop': 'laptop',
     'máy tính xách tay': 'laptop',
     'máy tính để bàn': 'desktop_computer',
     'máy tính bàn': 'desktop_computer',
     'máy tính': 'desktop_computer',
+    'pc': 'desktop_computer',
     'máy chiếu': 'projector',
+    'projector': 'projector',
+    'bảng trắng': 'whiteboard',
+    'bảng': 'whiteboard',
+    'whiteboard': 'whiteboard',
+    'điều khiển': 'remote',
+    'điều khiển từ xa': 'remote',
+    'remote': 'remote',
+    'sách': 'book',
+    'sách vở': 'book',
+    'quyển sách': 'book',
+    'tập sách': 'book',
+    'ba lô': 'backpack',
+    'balo': 'backpack',
+    'cặp': 'backpack',
+    'cặp sách': 'backpack',
+    'túi xách': 'backpack',
+    'bàn': 'table',
+    'cái bàn': 'table',
+    'bàn học': 'table',
+    'bàn làm việc': 'table',
     'tất cả': 'all',
     'mọi thứ': 'all'
 };
@@ -40,7 +62,12 @@ const CLASS_DISPLAY_NAMES = {
     'cell_phone': 'Điện thoại',
     'laptop': 'Laptop',
     'desktop_computer': 'Máy tính để bàn',
-    'projector': 'Máy chiếu'
+    'projector': 'Máy chiếu',
+    'whiteboard': 'Bảng trắng',
+    'remote': 'Điều khiển',
+    'book': 'Sách vở',
+    'backpack': 'Ba lô',
+    'table': 'Bàn'
 };
 
 // ==========================================
@@ -268,7 +295,7 @@ function handleVoiceCommand(transcript) {
         speakMessage(confirmMsg, true);
         sfx.playSuccessChime();
     } else {
-        speakMessage(`Không tìm thấy vật thể "${transcript}". Vui lòng chọn: điện thoại, laptop, máy tính, hoặc máy chiếu.`, true);
+        speakMessage(`Không tìm thấy vật thể "${transcript}". Bạn có thể chọn: điện thoại, laptop, sách vở, bàn, hoặc tất cả.`, true);
     }
 }
 
