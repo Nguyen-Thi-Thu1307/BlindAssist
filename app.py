@@ -16,15 +16,26 @@ app = Flask(__name__)
 # ==============================================================================
 # 1. CẤU HÌNH & KHỞI TẠO MÔ HÌNH YOLO
 # ==============================================================================
-MODEL_PATH = "best.pt"
-if not os.path.exists(MODEL_PATH):
-    # Fallback to yolo26n.pt if best.pt is not present
-    if os.path.exists("yolo26n.pt"):
-        MODEL_PATH = "yolo26n.pt"
-    else:
-        raise FileNotFoundError(f"Không tìm thấy file mô hình {MODEL_PATH}")
+import urllib.request
 
-print(f"[*] Đang tải mô hình từ: {MODEL_PATH}...")
+MODEL_PATH = "best.pt"
+MODEL_RELEASE_URL = "https://github.com/Nguyen-Thi-Thu1307/BlindAssist/releases/download/v1.0.0/best.pt"
+
+# Tự động tải file best.pt từ GitHub Release nếu chưa có local
+if not os.path.exists(MODEL_PATH):
+    print(f"[*] Không tìm thấy {MODEL_PATH} cục bộ. Đang tải từ GitHub Release...")
+    try:
+        urllib.request.urlretrieve(MODEL_RELEASE_URL, MODEL_PATH)
+        print(f"[✓] Tải thành công {MODEL_PATH} từ GitHub Release!")
+    except Exception as e:
+        print(f"[!] Không thể tải {MODEL_PATH} từ Release: {e}")
+        # Fallback sang yolo26n.pt nếu tải thất bại
+        if os.path.exists("yolo26n.pt"):
+            MODEL_PATH = "yolo26n.pt"
+        else:
+            MODEL_PATH = "yolo26n.pt" # Ultralytics sẽ tự động tải file chuẩn về
+
+print(f"[*] Đang tải mô hình vào YOLO từ: {MODEL_PATH}...")
 model = YOLO(MODEL_PATH)
 print(f"[✓] Đã tải mô hình thành công! Danh sách các lớp: {model.names}")
 
