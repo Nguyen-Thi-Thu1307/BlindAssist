@@ -74,6 +74,8 @@ YOLO_Project/
 
 ## 🚀 Hướng Dẫn Cài Đặt & Sử Dụng
 
+git clone https://github.com/Nguyen-Thi-Thu1307/BlindAssist.git
+
 ### 1. Yêu Cầu Tiên Quyết
 - Hệ điều hành: Windows, macOS hoặc Linux.
 - **Python**: Phiên bản 3.10 hoặc 3.11.
