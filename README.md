@@ -129,6 +129,300 @@ http://localhost:5000
 
 ---
 
+### 4. Hướng dẫn kết nối với điện thoại (Android 11 trở lên)
+## Kết nối điện thoại Android với máy tính qua ADB Wireless Debugging
+
+### 4.1. Giới thiệu
+
+Dự án sử dụng ADB (Android Debug Bridge) để kết nối điện thoại Android với máy tính thông qua mạng Wi-Fi. Việc kết nối không dây cho phép cài đặt, chạy thử và kiểm tra ứng dụng Android trực tiếp trên điện thoại mà không cần sử dụng cáp USB.
+
+Trong dự án này, môi trường kết nối gồm:
+
+- **Máy tính:** Windows 10/11.
+- **IDE:** Visual Studio Code.
+- **Điện thoại:** Samsung Galaxy A13, Android 14.
+- **Công cụ:** Android SDK Platform Tools (ADB).
+- **Phương thức kết nối:** Wireless Debugging (ADB qua Wi-Fi).
+
+### 4.2. Điều kiện trước khi kết nối
+
+Trước khi thực hiện, cần đảm bảo:
+
+1. Máy tính và điện thoại kết nối cùng một mạng Wi-Fi.
+2. Điện thoại sử dụng Android 11 trở lên và hỗ trợ Wireless Debugging.
+3. Đã bật Developer Options (Tùy chọn nhà phát triển) trên điện thoại.
+4. Đã tải và giải nén Android SDK Platform Tools trên máy tính.
+5. Không sử dụng mạng Wi-Fi khách (Guest Wi-Fi) có tính năng cô lập các thiết bị.
+
+### 4.3. Cài đặt ADB trên Windows
+
+**Bước 1: Tải Android SDK Platform Tools**
+
+Truy cập trang chính thức của Android:
+
+https://developer.android.com/tools/releases/platform-tools
+
+Tải phiên bản dành cho Windows và giải nén vào thư mục:
+
+```text
+D:\Android\platform-tools
+```
+
+Sau khi giải nén, kiểm tra thư mục có tệp:
+
+```text
+adb.exe
+```
+
+**Bước 2: Kiểm tra ADB**
+
+Mở PowerShell và nhập:
+
+```powershell
+& "D:\Android\platform-tools\adb.exe" version
+```
+
+Nếu cài đặt thành công, màn hình sẽ hiển thị thông tin phiên bản Android Debug Bridge.
+
+**Bước 3: Thiết lập PATH trong Git Bash (VS Code)**
+
+Nếu sử dụng Git Bash làm Terminal trong VS Code, nhập:
+
+```bash
+export PATH="/d/Android/platform-tools:$PATH"
+```
+
+Kiểm tra:
+
+```bash
+adb version
+```
+
+Nếu hiển thị phiên bản ADB thì có thể sử dụng các lệnh ADB trực tiếp trong Git Bash.
+
+*Lưu ý: Lệnh export trên chỉ có hiệu lực trong phiên Terminal hiện tại. Khi mở Terminal mới, cần chạy lại nếu chưa thiết lập PATH cố định.*
+
+### 4.4. Bật chế độ Wireless Debugging trên điện thoại
+
+Thực hiện trên điện thoại:
+**Bước 1: Bật Developer Options**
+
+Nếu chưa bật Tùy chọn nhà phát triển:
+
+1. Mở Cài đặt.
+2. Chọn Thông tin điện thoại.
+3. Chọn Thông tin phần mềm.
+4. Nhấn liên tục 7 lần vào Số hiệu bản tạo (Build number).
+5. Nhập mã PIN nếu được yêu cầu.
+
+**Bước 2: Bật chế độ gỡ lỗi**
+
+1. Mở Cài đặt.
+2. Chọn Tùy chọn nhà phát triển.
+3. Bật Gỡ lỗi qua USB (USB debugging).
+4. Bật Gỡ lỗi qua Wi-Fi (Wireless debugging).
+
+**Bước 3: Mở chức năng ghép nối**
+
+1. Truy cập Gỡ lỗi qua Wi-Fi.
+2. Chọn Ghép nối thiết bị bằng mã ghép nối (Pair device with pairing code).
+3. Điện thoại sẽ hiển thị:
+   - Địa chỉ IP.
+   - Cổng ghép nối (Pairing port).
+   - Mã ghép nối gồm 6 chữ số.
+
+Giữ màn hình này mở trong quá trình ghép nối.
+
+### 4.5. Ghép nối điện thoại với máy tính
+
+Có thể thực hiện bằng PowerShell hoặc Git Bash.
+
+**Bước 1: Khởi động ADB Server**
+
+Mở PowerShell và nhập:
+
+```powershell
+& "D:\Android\platform-tools\adb.exe" kill-server
+& "D:\Android\platform-tools\adb.exe" start-server
+```
+
+**Bước 2: Thực hiện ghép nối**
+
+Sử dụng địa chỉ IP và cổng ghép nối đang hiển thị trên điện thoại:
+
+```powershell
+& "D:\Android\platform-tools\adb.exe" pair IP:PAIRING_PORT
+```
+
+Ví dụ:
+
+```powershell
+& "D:\Android\platform-tools\adb.exe" pair 192.168.1.111:39151
+```
+
+**Bước 3: Nhập mã ghép nối**
+
+Khi PowerShell hiển thị:
+
+```text
+Enter pairing code:
+```
+
+Nhập mã 6 chữ số đang hiển thị trên điện thoại rồi nhấn Enter.
+
+Nếu thành công, kết quả sẽ tương tự:
+
+```text
+Successfully paired to 192.168.1.111:39151
+```
+
+*Lưu ý: IP và cổng trong ví dụ chỉ mang tính minh họa. Cần sử dụng thông tin mới nhất trên điện thoại. Mã ghép nối không được chia sẻ công khai.*
+
+### 4.6. Kết nối điện thoại sau khi ghép nối
+
+Sau khi ghép nối thành công, quay lại màn hình Gỡ lỗi qua Wi-Fi chính trên điện thoại.
+
+Tìm địa chỉ IP và cổng kết nối (IP address & Port). Cổng này có thể khác cổng ghép nối ở bước trước.
+
+Thực hiện lệnh:
+
+```bash
+adb connect IP:CONNECT_PORT
+```
+
+Ví dụ:
+
+```bash
+adb connect 192.168.1.111:42001
+```
+
+Nếu kết nối thành công, kết quả sẽ tương tự:
+
+```text
+connected to 192.168.1.111:42001
+```
+
+### 4.7. Kiểm tra thiết bị đã kết nối
+
+Nhập lệnh:
+
+```bash
+adb devices
+```
+
+Nếu kết nối thành công, danh sách thiết bị sẽ hiển thị tương tự:
+
+```text
+List of devices attached
+192.168.1.111:42001    device
+```
+
+Trong đó:
+
+- `device`: Điện thoại đã kết nối và sẵn sàng sử dụng.
+- `offline`: Thiết bị đã được nhận diện nhưng chưa sẵn sàng giao tiếp.
+- Không có thiết bị: Chưa kết nối thành công.
+
+Khi thiết bị hiển thị trạng thái `device`, có thể sử dụng ADB để cài đặt, chạy và kiểm tra ứng dụng Android.
+
+### 4.8. Một số lệnh ADB thường sử dụng
+
+| Lệnh | Chức năng |
+|---|---|
+| `adb version` | Kiểm tra phiên bản ADB |
+| `adb devices` | Liệt kê thiết bị đã kết nối |
+| `adb pair IP:PORT` | Ghép nối điện thoại |
+| `adb connect IP:PORT` | Kết nối điện thoại |
+| `adb disconnect` | Ngắt kết nối không dây |
+| `adb kill-server` | Dừng ADB Server |
+| `adb start-server` | Khởi động ADB Server |
+| `adb install app.apk` | Cài đặt ứng dụng APK |
+| `adb logcat` | Theo dõi nhật ký hoạt động của ứng dụng |
+
+### 4.9. Xử lý một số lỗi thường gặp
+
+**Lỗi 1: `adb: command not found`**
+
+Nguyên nhân: Git Bash chưa nhận diện được đường dẫn chứa adb.exe.
+
+Cách khắc phục:
+
+```bash
+export PATH="/d/Android/platform-tools:$PATH"
+```
+
+**Lỗi 2: `protocol fault (couldn't read status message): No error`**
+
+Nguyên nhân có thể liên quan đến quá trình ghép nối ADB, mạng Wi-Fi hoặc môi trường kết nối.
+
+Cách khắc phục:
+
+1. Kiểm tra máy tính và điện thoại có cùng Wi-Fi.
+2. Đảm bảo đã bật cả USB debugging và Wireless debugging.
+3. Tắt VPN nếu đang sử dụng.
+4. Khởi động lại ADB Server.
+5. Tạo mã ghép nối mới trên điện thoại.
+6. Thử ghép nối bằng PowerShell với đường dẫn adb.exe đầy đủ.
+
+**Lỗi 3: `TcpTestSucceeded: False`**
+
+Nguyên nhân: Máy tính chưa truy cập được cổng ghép nối của điện thoại.
+
+Cách kiểm tra trên PowerShell:
+
+```powershell
+Test-NetConnection IP -Port PAIRING_PORT
+```
+
+Nếu kết quả là `False`, cần kiểm tra:
+
+- Hai thiết bị có thực sự cùng mạng Wi-Fi hay không.
+- Router có bật AP Isolation (cô lập thiết bị) hay không.
+- Tường lửa Windows có chặn kết nối ADB hay không.
+- Địa chỉ IP và cổng có còn chính xác hay không.
+
+**Lỗi 4: `failed to connect`**
+
+Nguyên nhân có thể do sử dụng sai cổng kết nối hoặc điện thoại đã thay đổi địa chỉ IP.
+
+Cách khắc phục:
+
+1. Mở lại Wireless Debugging trên điện thoại.
+2. Kiểm tra IP và cổng kết nối hiện tại.
+3. Thực hiện lại lệnh `adb connect`.
+
+### 4.10. Sử dụng ADB để chạy ứng dụng Android
+
+Sau khi điện thoại kết nối thành công, có thể sử dụng ADB để cài đặt ứng dụng:
+
+```bash
+adb install app-debug.apk
+```
+
+Theo dõi nhật ký hoạt động:
+
+```bash
+adb logcat
+```
+
+Kiểm tra thiết bị:
+
+```bash
+adb devices
+```
+
+Khi phát triển ứng dụng, có thể kết hợp VS Code, Gradle và ADB để biên dịch APK, cài đặt và kiểm thử trực tiếp trên điện thoại Samsung Galaxy A13.
+
+### 4.11. Lưu ý
+
+- Địa chỉ IP và cổng kết nối có thể thay đổi khi khởi động lại Wi-Fi hoặc Wireless Debugging.
+- Cổng ghép nối và cổng kết nối là hai cổng khác nhau.
+- Chỉ cần ghép nối lại khi thiết bị yêu cầu hoặc thông tin ghép nối không còn hiệu lực.
+- Sau khi đã ghép nối, cần sử dụng cổng kết nối trên màn hình Wireless Debugging chính để chạy lệnh `adb connect`.
+- Không chia sẻ mã ghép nối hoặc bật gỡ lỗi không dây trên mạng Wi-Fi công cộng không đáng tin cậy.
+
+**Kết quả mong đợi:** Máy tính có thể nhận diện và kết nối không dây với Android thông qua ADB, tạo điều kiện thuận lợi cho quá trình phát triển và kiểm thử ứng dụng Android bằng VS Code.
+
 ## 🏋️ Huấn Luyện Mô Hình (Training)
 
 Nếu bạn muốn huấn luyện lại hoặc train thêm trên tập dữ liệu mới:
